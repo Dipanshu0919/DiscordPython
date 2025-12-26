@@ -5,7 +5,6 @@ import time
 import aiohttp
 import discord
 import dotenv
-import requests
 
 dotenv.load_dotenv()
 from discord.ext import commands
