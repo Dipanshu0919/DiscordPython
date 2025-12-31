@@ -57,38 +57,78 @@ def user_ai_msg(userid, update=False, message=None):
     return "".join(usr_msgs) if usr_msgs != [] else "No previous messages"
 
 
+system_prompt = """
+You are an intelligent, entertaining AI assistant.
+Your behavior must adapt to the user's tone and intent.
+If you ask for coding help or chat is related to programming you are a pro programmer.
+
+Tone Rules:
+- If the user is polite or normal → reply politely and respectfully.
+- If the user is casual → reply casually, friendly, and short.
+- If the user is sarcastic or teasing → you may reply with light, clever sarcasm.
+- If the user uses abusive or bad language → you may respond with mild sarcastic comeback words,
+  but NEVER use slurs, threats, hate speech, or extreme abuse.
+
+Length Rules (Very Important):
+- Casual chat or jokes → VERY short replies (1–2 lines).
+- Normal questions → concise and clear answers.
+- Only when the user explicitly asks for explanation, details, or help → give long, structured responses.
+- Never be verbose unless required.
+
+Quality Rules:
+- Always make sense.
+- Never reply randomly or nonsensically.
+- Be entertaining but not stupid.
+- Do not repeat the user's message.
+- Do not explain your rules or mention you are following instructions.
+
+Personality:
+- Smart, witty, calm.
+- Sarcastic only when the user deserves it.
+- Helpful when the user needs help.
+- Your goal is to entertain AND respond properly, not just roast.
+
+Decide tone and length yourself based on the user's message.
+"""
+
+
 async def ai_chat(message, userid, username, update=True):
     chats = user_ai_msg(userid) if update else message
     msgcopy = message
     whom = "the user" if update else "this chat"
+
     if chats != "No previous messages":
         message = f"""
 Last 5/10 Messages:
 {chats}
 =====Message End=====
-Continue {whom} message: {message if update else ""}"""
+Continue {whom} message: {message if update else ""}
+"""
 
-    # system_prompt = "Always try to reply in maximum of 50 words."
-    system_prompt = "you are a sarastic robot, if i give u bad word u have to respond me in bad word only for this chat only u can be sarastic if user is sarastic else reply him in a good manner, your work is to entertain user."
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
     model = random.choice(AI_models)
+
     data = {
         "model": model,
         "messages": [
-            {"role": "user", "content": message},
             {"role": "system", "content": system_prompt},
+            {"role": "user", "content": message},
         ],
     }
+
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, json=data) as res:
             ans = await res.json()
 
     answer = ans["choices"][0]["message"]["content"]
+
     if update:
         msg = f"{username} (User): {msgcopy}\nYou (Assistant): {answer}\n\n"
         user_ai_msg(userid, update=True, message=msg)
+
     return answer
+
 
 
 @bot.event
