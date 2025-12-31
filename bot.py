@@ -99,6 +99,8 @@ Continue {whom} message: {message if update else ""}
 
     if "choices" not in ans:
         answer = f"Error from AI: {ans}"
+    elif len(ans["choices"]) == 0:
+        answer = "Please retry again.."
     else:
         answer = ans["choices"][0]["message"]["content"]
     
