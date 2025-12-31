@@ -20,7 +20,7 @@ OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 prev_message = {}
 channel_mode = {}
 all_commands = ("purge", "mode", "ping")
-AI_models = ("xiaomi/mimo-v2-flash:free", "mistralai/devstral-2512:free", "nex-agi/deepseek-v3.1-nex-n1:free", "google/gemini-2.0-flash-exp:free")
+AI_models = ("xiaomi/mimo-v2-flash:free", "mistralai/devstral-2512:free", "nex-agi/deepseek-v3.1-nex-n1:free")
 
 bot = commands.Bot(command_prefix=["!", ".", "?"], intents=intents)
 
