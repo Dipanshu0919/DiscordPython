@@ -125,33 +125,35 @@ async def on_message(message):
     username = message.author.name
     chk_cmd = check_command(message.content.lower())
     if channel_mode.get(message.channel.id) == "Always" and not chk_cmd:
-        try:
-            # msg = await message.reply(".....")
-            sendtoai = await ai_chat(message.content, userid, username)
-            # sendtoai = "temp"
-            await message.reply(content=sendtoai)
-        except Exception as e:
-            await message.channel.send(f"An error occurred from discord: {e}")
+        async with message.channel.typing():
+            try:
+                # msg = await message.reply(".....")
+                sendtoai = await ai_chat(message.content, userid, username)
+                # sendtoai = "temp"
+                await message.reply(content=sendtoai)
+            except Exception as e:
+                await message.channel.send(f"An error occurred from discord: {e}")
 
     if (
         "ai" in message.content.lower()
         and channel_mode.get(message.channel.id, "AI") == "AI"
     ):
+        async with message.channel.typing():
         # msg = await message.reply(".....")
-        all_msg = []
-        async for x in message.channel.history(limit=5, before=message):
-            msg_content = x.content
-            if len(msg_content) > 400:
-                part1 = msg_content[:300]
-                part2 = msg_content[-100:]
-                x.content = f"{part1}.....{part2}"
-            all_msg.append(f"{x.author}: {msg_content}\n\n")
-        all_msg = "".join(all_msg[::-1])
-        try:
-            sendtoai = await ai_chat(all_msg, 1, "User", update=False)
-            await message.reply(sendtoai)
-        except Exception as e:
-            await message.channel.send(f"An error occurred from discord: {e}")
+            all_msg = []
+            async for x in message.channel.history(limit=5, before=message):
+                msg_content = x.content
+                if len(msg_content) > 400:
+                    part1 = msg_content[:300]
+                    part2 = msg_content[-100:]
+                    x.content = f"{part1}.....{part2}"
+                all_msg.append(f"{x.author}: {msg_content}\n\n")
+            all_msg = "".join(all_msg[::-1])
+            try:
+                sendtoai = await ai_chat(all_msg, 1, "User", update=False)
+                await message.reply(sendtoai)
+            except Exception as e:
+                await message.channel.send(f"An error occurred from discord: {e}")
 
     await bot.process_commands(message)
 
