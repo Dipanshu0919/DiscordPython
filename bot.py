@@ -146,7 +146,7 @@ async def on_message(message):
                 if len(msg_content) > 400:
                     part1 = msg_content[:300]
                     part2 = msg_content[-100:]
-                    x.content = f"{part1}.....{part2}"
+                    msg_content.content = f"{part1}.....{part2}"
                 all_msg.append(f"{x.author}: {msg_content}\n\n")
             all_msg = "".join(all_msg[::-1])
             try:
