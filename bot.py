@@ -18,10 +18,11 @@ OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 
 prev_message = {}
 channel_mode = {}
-all_commands = ("purge", "mode")
+all_commands = ("purge", "mode", "ping")
 
 bot = commands.Bot(command_prefix=["!", ".", "?"], intents=intents)
 
+start_time = time.time()
 
 def temp_file(msg):
     with open("tempfile.txt", "w") as f:
@@ -135,6 +136,12 @@ async def purge(ctx):
     from_msg = await ctx.channel.fetch_message(ctx.message.reference.message_id)
     deleted = await ctx.channel.purge(after=from_msg)
     await ctx.send(f"Deleted total {len(deleted)} messages.", delete_after=3)
+
+
+@bot.command()
+async def ping(ctx):
+    uptime = start_time - time.time()
+    await ctx.message.reply(f"**Pong!**\n**Uptime:** _{uptime}_")
 
 
 @bot.command()
