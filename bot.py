@@ -97,7 +97,7 @@ Continue {whom} message: {message if update else ""}
         async with session.post(url, headers=headers, json=data) as res:
             ans = await res.json()
 
-    if not ans["choices"]:
+    if "choices" not in ans:
         answer = f"Error from AI: {ans}"
     else:
         answer = ans["choices"][0]["message"]["content"]
