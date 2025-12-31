@@ -98,7 +98,7 @@ Continue {whom} message: {message if update else ""}
             ans = await res.json()
 
     if not ans["choices"]:
-        answer = f"Error from AI: {ans}")
+        answer = f"Error from AI: {ans}"
     else:
         answer = ans["choices"][0]["message"]["content"]
     
