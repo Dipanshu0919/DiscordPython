@@ -97,11 +97,14 @@ Continue {whom} message: {message if update else ""}
         async with session.post(url, headers=headers, json=data) as res:
             ans = await res.json()
 
-    answer = ans["choices"][0]["message"]["content"]
-
-    if update:
-        msg = f"{username} (User): {msgcopy}\nYou (Assistant): {answer}\n\n"
-        user_ai_msg(userid, update=True, message=msg)
+    if not ans["choices"]:
+        answer = f"Error from AI: {ans}")
+    else:
+        answer = ans["choices"][0]["message"]["content"]
+    
+        if update:
+            msg = f"{username} (User): {msgcopy}\nYou (Assistant): {answer}\n\n"
+            user_ai_msg(userid, update=True, message=msg)
 
     return answer
 
