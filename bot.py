@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 
 import aiohttp
@@ -25,6 +26,15 @@ bot = commands.Bot(command_prefix=["!", ".", "?"], intents=intents)
 def temp_file(msg):
     with open("tempfile.txt", "w") as f:
         f.writelines(msg)
+
+
+def check_command(cmd):
+    pattern = re.search(r"[.!/?]+(\w+)", cmd)
+    if pattern:
+        n = pattern.groups()[0]
+        if n in all_commands:
+            return True
+    return False
 
 
 def user_ai_msg(userid, update=False, message=None):
@@ -54,7 +64,8 @@ Last 5/10 Messages:
 =====Message End=====
 Continue {whom} message: {message if update else ""}"""
 
-    system_prompt = "you are a sarastic robot, if i give u bad word u have to respond me in bad word only for this chat only u can be sarastic if user is sarastic else reply him in a good manner, your work is to entertain user."
+    system_prompt = "Always try to reply in maximum of 50 words."
+    # system_prompt = "you are a sarastic robot, if i give u bad word u have to respond me in bad word only for this chat only u can be sarastic if user is sarastic else reply him in a good manner, your work is to entertain user."
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
     data = {
@@ -86,11 +97,8 @@ async def on_message(message):
         return
     userid = message.author.id
     username = message.author.name
-
-    if (
-        channel_mode.get(message.channel.id) == "Always"
-        and message.content.lower() not in all_commands
-    ):
+    chk_cmd = check_command(message.content.lower())
+    if channel_mode.get(message.channel.id) == "Always" and not chk_cmd:
         try:
             msg = await message.reply(".....")
             sendtoai = await ai_chat(message.content, userid, username)
