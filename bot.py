@@ -140,7 +140,7 @@ async def purge(ctx):
 
 @bot.command()
 async def ping(ctx):
-    uptime = start_time - time.time()
+    uptime = time.time() - start_time
     await ctx.message.reply(f"**Pong!**\n**Uptime:** _{uptime}_")
 
 
