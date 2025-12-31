@@ -146,7 +146,7 @@ async def on_message(message):
                 if len(msg_content) > 400:
                     part1 = msg_content[:300]
                     part2 = msg_content[-100:]
-                    msg_content.content = f"{part1}.....{part2}"
+                    msg_content = f"{part1}.....{part2}"
                 all_msg.append(f"{x.author}: {msg_content}\n\n")
             all_msg = "".join(all_msg[::-1])
             try:
@@ -168,7 +168,7 @@ async def purge(ctx):
 @bot.command()
 async def ping(ctx):
     uptime = time.time() - start_time
-    await ctx.message.reply(f"**Pong!**\n**Uptime:** _{uptime}_")
+    await ctx.message.reply(f"**Pong!**\n**Uptime:** `{uptime}`")
 
 
 @bot.command()
