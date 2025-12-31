@@ -2,6 +2,7 @@ import json
 import os
 import re
 import time
+import random
 
 import aiohttp
 import discord
@@ -19,6 +20,8 @@ OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
 prev_message = {}
 channel_mode = {}
 all_commands = ("purge", "mode", "ping")
+AI_models = ("xiaomi/mimo-v2-flash:free","allenai/olmo-3.1-32b-think:free", "mistralai/devstral-2512:free", "nex-agi/deepseek-v3.1-nex-n1:free", "alibaba/tongyi-deepresearch-30b-a3b:free",
+            "openai/gpt-oss-120b:free", "google/gemini-2.0-flash-exp:free", "nvidia/nemotron-3-nano-30b-a3b:free")
 
 bot = commands.Bot(command_prefix=["!", ".", "?"], intents=intents)
 
@@ -69,8 +72,9 @@ Continue {whom} message: {message if update else ""}"""
     system_prompt = "you are a sarastic robot, if i give u bad word u have to respond me in bad word only for this chat only u can be sarastic if user is sarastic else reply him in a good manner, your work is to entertain user."
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
+    model = random.choice(AI_models)
     data = {
-        "model": "mistralai/devstral-2512:free",
+        "model": model,
         "messages": [
             {"role": "user", "content": message},
             {"role": "system", "content": system_prompt},
