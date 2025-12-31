@@ -65,8 +65,8 @@ Last 5/10 Messages:
 =====Message End=====
 Continue {whom} message: {message if update else ""}"""
 
-    system_prompt = "Always try to reply in maximum of 50 words."
-    # system_prompt = "you are a sarastic robot, if i give u bad word u have to respond me in bad word only for this chat only u can be sarastic if user is sarastic else reply him in a good manner, your work is to entertain user."
+    # system_prompt = "Always try to reply in maximum of 50 words."
+    system_prompt = "you are a sarastic robot, if i give u bad word u have to respond me in bad word only for this chat only u can be sarastic if user is sarastic else reply him in a good manner, your work is to entertain user."
     url = "https://openrouter.ai/api/v1/chat/completions"
     headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
     data = {
@@ -101,10 +101,10 @@ async def on_message(message):
     chk_cmd = check_command(message.content.lower())
     if channel_mode.get(message.channel.id) == "Always" and not chk_cmd:
         try:
-            msg = await message.reply(".....")
+            # msg = await message.reply(".....")
             sendtoai = await ai_chat(message.content, userid, username)
             # sendtoai = "temp"
-            await msg.edit(content=sendtoai)
+            await message.reply(content=sendtoai)
         except Exception as e:
             await message.channel.send(f"An error occurred from discord: {e}")
 
@@ -112,9 +112,9 @@ async def on_message(message):
         "ai" in message.content.lower()
         and channel_mode.get(message.channel.id, "AI") == "AI"
     ):
-        msg = await message.reply(".....")
+        # msg = await message.reply(".....")
         all_msg = []
-        async for x in msg.channel.history(limit=5, before=msg):
+        async for x in message.channel.history(limit=5, before=message):
             msg_content = x.content
             if len(msg_content) > 400:
                 part1 = msg_content[:300]
@@ -124,7 +124,7 @@ async def on_message(message):
         all_msg = "".join(all_msg[::-1])
         try:
             sendtoai = await ai_chat(all_msg, 1, "User", update=False)
-            await msg.edit(content=sendtoai)
+            await message.reply(sendtoai)
         except Exception as e:
             await message.channel.send(f"An error occurred from discord: {e}")
 
